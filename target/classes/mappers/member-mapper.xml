@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC
+"-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberMapper">
+	
+	<resultMap id="resultList" type="Member">
+		<result property="user_id" column="user_id" />
+		<result property="user_pwd" column="user_pwd" />
+		<result property="user_name" column="user_name" />
+		<result property="user_fnum" column="user_fnum" />
+		<result property="user_enum" column="user_enum" />
+		<result property="phone" column="phone" />
+		<result property="email" column="email" />
+		<result property="postcode" column="postcode" />
+		<result property="address" column="address" />
+		<result property="address1" column="address1" />
+		<result property="address2" column="address2" />		
+		<result property="keyword" column="keyword" />
+		<result property="admin_ok" column="admin_ok" />
+		<result property="login_ok" column="login_ok" />
+		<result property="login_stack" column="login_stack" />		
+	</resultMap>
+		
+		
+	<!-- 로그인 -->	
+	<select id="selectLogin" parameterType="Member" resultType="Member">
+		select * from member 	
+		where user_id = #{ user_id }
+	</select>
+	
+	
+	<!-- 로그인 제한 스텍 초기화 -->
+	<update id="updateLoginStack" parameterType="Member">
+		update member 
+		set login_stack = #{ login_stack } 
+		where user_id = #{ user_id }
+	</update>
+	
+	<!-- 로그인 제한 여부 -->
+	<update id="updateLoginOk" parameterType="Member">
+		update member 
+		set login_ok = #{ login_ok } 
+		where user_id = #{ user_id }
+	</update>
+		
+	<!-- 비밀번호 암호화 -->
+	<update id="updatePwdEncoding" parameterType="Member">
+		update member 
+		set user_pwd = #{ user_pwd } 
+		where user_id = #{ user_id }
+	</update>
+	
+	<!-- 회원가입 -->
+	<insert id="insertMember" parameterType="Member">
+		insert into member (user_id, user_pwd, user_name, user_fnum, user_enum, phone, email, postcode,
+		                    address, address1, address2, keyword, admin_ok, login_ok,login_stack)
+		values (#{ user_id }, #{ user_pwd }, #{ user_name }, #{ user_fnum }, #{ user_enum }, #{ phone }, #{ email }, 
+		        #{ postcode }, #{ address }, #{ address1 },#{ address2 }, #{ keyword }, 'N', 'Y', 0)
+	</insert>
+	
+	<!-- 아이디 중복체크 -->
+	<select id="selectCheckId" parameterType="string" resultType="_int">
+		select count(user_id) 
+		from member 
+		where user_id = #{ user_id }	
+	</select>
+	
+	
+	<!-- 이메일로 유저 중복체크 -->
+	<select id="dupCheck" parameterType="String" resultType="Member">
+		select *
+		from member
+		where email = #{ email }
+	</select>
+	<!-- 이메일로 유저 선택 -->
+	<select id="selectUser" parameterType="String" resultType="Member">
+		select * from member
+		where email = #{ email }
+	</select>
+	
+	
+		
+	<select id="findId" parameterType="Member" resultType="string">
+		SELECT USER_ID
+		FROM MEMBER
+		WHERE USER_NAME = #{ user_name } AND EMAIL = #{ email }
+	</select>
+	
+	
+	
+	
+	
+</mapper>
